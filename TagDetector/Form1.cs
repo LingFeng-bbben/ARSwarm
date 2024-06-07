@@ -56,12 +56,15 @@ namespace TagDetector
                     Cv2.WaitKey(1);
                 }
 
+                //TODO: pixel pos to camera pos https://docs.opencv.org/4.x/d5/dae/tutorial_aruco_detection.html
+
                 Invoke(new Action(() =>
                 {
                     fpslabel.Text = "Calc Time: " + (DateTime.Now - lastTime).TotalSeconds;
                     detlabel.Text = "Detection: " + ids.Length;
                 }));
                 
+                //TODO: send it through websocket, using some sort of line-up mechanism
 
                 lastTime = DateTime.Now;
                 
