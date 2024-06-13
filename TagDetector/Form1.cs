@@ -22,14 +22,19 @@ namespace TagDetector
 
         private void button1_Click(object sender, EventArgs e)
         {
-            capture = new VideoCapture((int)numericUpDown1.Value);
+            InitCamera();
+            processThread.Start();
+        }
+
+        private void InitCamera()
+        {
+            capture = new VideoCapture();
             capture.Open((int)numericUpDown1.Value, VideoCaptureAPIs.DSHOW);
             capture.Set(VideoCaptureProperties.FrameWidth, 1280);
             capture.Set(VideoCaptureProperties.FrameHeight, 720);
             capture.Set(VideoCaptureProperties.Fps, 60);
             capture.Set(VideoCaptureProperties.FourCC, FourCC.MJPG);
             //dont touch the sort, magic
-            processThread.Start();
         }
 
         void processLoop()
@@ -49,7 +54,8 @@ namespace TagDetector
 
                 CvAruco.DetectMarkers(frame, dictionary, out var corners, out var ids, detectorParameters, out var rejectedPoints);
 
-                if(isDisplay) { 
+                if (isDisplay)
+                {
                     using var detectedMarkers = frame.Clone();
                     CvAruco.DrawDetectedMarkers(detectedMarkers, corners, ids, Scalar.Crimson);
                     Cv2.ImShow("aaa", detectedMarkers);
@@ -63,12 +69,17 @@ namespace TagDetector
                     fpslabel.Text = "Calc Time: " + (DateTime.Now - lastTime).TotalSeconds;
                     detlabel.Text = "Detection: " + ids.Length;
                 }));
-                
+
                 //TODO: send it through websocket, using some sort of line-up mechanism
 
                 lastTime = DateTime.Now;
-                
+
             }
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

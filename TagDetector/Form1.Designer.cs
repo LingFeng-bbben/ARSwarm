@@ -33,6 +33,7 @@
             checkBox1 = new CheckBox();
             numericUpDown1 = new NumericUpDown();
             detlabel = new Label();
+            button2 = new Button();
             ((System.ComponentModel.ISupportInitialize)numericUpDown1).BeginInit();
             SuspendLayout();
             // 
@@ -58,9 +59,7 @@
             // checkBox1
             // 
             checkBox1.AutoSize = true;
-            checkBox1.Checked = true;
-            checkBox1.CheckState = CheckState.Checked;
-            checkBox1.Location = new Point(12, 41);
+            checkBox1.Location = new Point(12, 70);
             checkBox1.Name = "checkBox1";
             checkBox1.Size = new Size(99, 21);
             checkBox1.TabIndex = 3;
@@ -84,11 +83,22 @@
             detlabel.TabIndex = 5;
             detlabel.Text = "Det:";
             // 
+            // button2
+            // 
+            button2.Location = new Point(80, 42);
+            button2.Name = "button2";
+            button2.Size = new Size(75, 24);
+            button2.TabIndex = 6;
+            button2.Text = "Calibrate";
+            button2.UseVisualStyleBackColor = true;
+            button2.Click += button2_Click;
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(7F, 17F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(369, 79);
+            ClientSize = new Size(369, 103);
+            Controls.Add(button2);
             Controls.Add(detlabel);
             Controls.Add(numericUpDown1);
             Controls.Add(checkBox1);
@@ -108,5 +118,6 @@
         private CheckBox checkBox1;
         private NumericUpDown numericUpDown1;
         private Label detlabel;
+        private Button button2;
     }
 }
