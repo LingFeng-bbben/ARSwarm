@@ -22,7 +22,7 @@ namespace TagDetector
 
         private void button1_Click(object sender, EventArgs e)
         {
-            capture = new VideoCapture();
+            capture = new VideoCapture((int)numericUpDown1.Value);
             capture.Open((int)numericUpDown1.Value, VideoCaptureAPIs.DSHOW);
             capture.Set(VideoCaptureProperties.FrameWidth, 1280);
             capture.Set(VideoCaptureProperties.FrameHeight, 720);

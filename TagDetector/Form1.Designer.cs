@@ -58,6 +58,8 @@
             // checkBox1
             // 
             checkBox1.AutoSize = true;
+            checkBox1.Checked = true;
+            checkBox1.CheckState = CheckState.Checked;
             checkBox1.Location = new Point(12, 41);
             checkBox1.Name = "checkBox1";
             checkBox1.Size = new Size(99, 21);
@@ -71,6 +73,7 @@
             numericUpDown1.Name = "numericUpDown1";
             numericUpDown1.Size = new Size(62, 23);
             numericUpDown1.TabIndex = 4;
+            numericUpDown1.Value = new decimal(new int[] { 1, 0, 0, 0 });
             // 
             // detlabel
             // 
