@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "TagDetector": {
+      "commandName": "Project",
+      "nativeDebugging": true
+    }
+  }
+}

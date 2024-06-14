@@ -6,7 +6,7 @@ namespace ConsoleApp1
 {
     public class BoardService : WebSocketBehavior
     {
-        static int idCount = -1;
+        static int idCount = 1;
 
         protected override void OnMessage(MessageEventArgs e)
         {
