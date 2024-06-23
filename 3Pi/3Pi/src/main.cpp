@@ -1,28 +1,23 @@
-#include <Arduino.h>
-#include <Wire.h>
-
-int i2cSend(const char *message)
-{
-  Wire.beginTransmission(5);
-  Wire.write(message);
-  return Wire.endTransmission();
-}
+#include "includes.hpp"
 
 void setup()
 {
-  Wire.setClock(100000);
+  Wire.setClock(400000);
+  //3Pi as master, just in case we need some "npc" robot without m5
   Wire.begin();
   Serial.begin(9600);
-  int ret = -1;
-  while (ret != 0)
-  {
-    ret = i2cSend("Hi");
-  }
-  Serial.println("I2C OK");
+  iInit();
+  eInit();
+  i2cInit();
 }
 
 void loop()
 {
-  Serial.println(i2cSend("Ping"));
-  delay(1000);
+  iUpdateIRs();
+  char msg[25];
+  sprintf(msg,"IRSEN %d,%d",iRValue[0],iRValue[1]);
+  Serial.println(i2cSend(msg));
+  sprintf(msg,"ECSEN %d,%d",eCount1,eCount2);
+  Serial.println(i2cSend(msg));
+  delay(200);
 }

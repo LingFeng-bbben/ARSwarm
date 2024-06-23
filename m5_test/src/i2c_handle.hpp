@@ -7,15 +7,19 @@ void onI2cRecv(int length)
 {
     Serial.println(xPortGetCoreID());
     isInitMsgRecv = true;
-    //Serial.println(length);
+    // Serial.println(length);
     byte buf[length];
     Wire.readBytes(buf, length);
     char str[128];
-    sprintf(str,"%.*s", length, buf);
-    if(ws_send_que_handle ==0)return;
-    xQueueSend(ws_send_que_handle,(void*)str,0);
-    //SendTextToWS(wsclient,String(str,strleng));
-    //Serial.printf("%.*s\n", length, buf);
+    sprintf(str, "%.*s", length, buf);
+    //quit if it is null or full
+    if (ws_send_que_handle == 0)
+        return;
+    if (xQueueIsQueueFullFromISR(ws_send_que_handle))
+        return;
+    xQueueSend(ws_send_que_handle, (void *)str, 0);
+    // SendTextToWS(wsclient,String(str,strleng));
+    // Serial.printf("%.*s\n", length, buf);
 }
 
 void I2CConnect()
