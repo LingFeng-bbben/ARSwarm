@@ -1,5 +1,5 @@
 #include "includes.h"
-#include "net_handle.hpp"
+
 
 TaskHandle_t Task1;
 TaskHandle_t Task2;
@@ -7,10 +7,11 @@ TaskHandle_t Task2;
 extern esp_websocket_client_handle_t wsclient;
 extern String macid;
 
+QueueHandle_t ws_send_que_handle;
+
 void Task1code(void *parameter)
 {
   WSConnect();
-  delay(1000);
   SendTextToWS(wsclient, "IDREQ " + macid);
   vTaskDelete(Task1);
 }
@@ -19,16 +20,16 @@ void Task1code(void *parameter)
 
 void Task2code(void *parameter)
 {
+  char rxbuf[128];
+  ws_send_que_handle = xQueueCreate(5,sizeof(rxbuf));
   //TODO: 处理任务发送队列
   //Test code for the latency
   while (1)
   {
-    if (M5.Touch.ispressed())
-    {
-      SendTextToWS(wsclient, "TOUCH " + macid);
-      Serial.print("touch");
+    if(xQueueReceive(ws_send_que_handle,&(rxbuf),(TickType_t)5)){
+      SendTextToWS(wsclient,String(rxbuf,sizeof(rxbuf)));
+      vTaskDelay(pdMS_TO_TICKS(20));
     }
-    delay(20);
   }
   vTaskDelete(Task2);
 }

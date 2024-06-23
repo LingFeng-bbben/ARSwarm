@@ -1,11 +1,12 @@
 #include "includes.h"
-#include "message_handle.hpp"
+
 
 esp_websocket_client_handle_t wsclient;
 String macid;
 
 void WifiConnect()
 {
+    M5.Lcd.print("Connecting Wifi");
     WiFi.setSleep(WIFI_PS_NONE);
     WiFi.begin(WIFI_SSID, WIFI_PASS);
     for (int i = 0; i < 5; i++)
