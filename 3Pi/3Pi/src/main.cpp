@@ -13,11 +13,18 @@ void setup()
 
 void loop()
 {
+  //getSensors();
+  
   iUpdateIRs();
-  char msg[25];
-  sprintf(msg,"IRSEN %d,%d",iRValue[0],iRValue[1]);
-  Serial.println(i2cSend(msg));
+  char msg[32];
+  sprintf(msg,"Hello mate");
+  setIRMessage(msg,32);
+  for(int i=0;i<4;i++){
+    getIRMessage(i);
+  }
+  sprintf(msg,"BPSEN %d,%d",iRValue[0],iRValue[1]);
+  i2cSend(msg);
   sprintf(msg,"ECSEN %d,%d",eCount1,eCount2);
-  Serial.println(i2cSend(msg));
+  i2cSend(msg);
   delay(200);
 }

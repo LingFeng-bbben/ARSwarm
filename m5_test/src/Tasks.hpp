@@ -27,7 +27,7 @@ void Task2code(void *parameter)
   while (1)
   {
     if(xQueueReceive(ws_send_que_handle,&(rxbuf),(TickType_t)0)){
-      SendTextToWS(wsclient,String(rxbuf,sizeof(rxbuf)));
+      SendTextToWS(wsclient, rxbuf);
       vTaskDelay(pdMS_TO_TICKS(50));
     }
   }

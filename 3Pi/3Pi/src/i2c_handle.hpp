@@ -3,7 +3,7 @@
 //send all message serialized, so it is readable and easy to change.
 int i2cSend(const char *message)
 {
-    Wire.beginTransmission(5);
+    Wire.beginTransmission(M5_I2C_ADDR);
     Wire.write(message);
     return Wire.endTransmission();
 }

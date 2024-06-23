@@ -9,7 +9,7 @@ bool SendTextToWS(esp_websocket_client_handle_t client, String data)
     {
         Serial.println("Sending: " + data);
         const char *buf = data.c_str();
-        esp_websocket_client_send_text(client, buf, strlen(buf), portMAX_DELAY);
+        esp_websocket_client_send_text(client, buf, strlen(buf), pdMS_TO_TICKS(1000));
         return true;
     }
     else

@@ -5,12 +5,13 @@ bool isInitMsgRecv = false;
 
 void onI2cRecv(int length)
 {
-    Serial.println(xPortGetCoreID());
+    //Serial.println(xPortGetCoreID());
     isInitMsgRecv = true;
     // Serial.println(length);
     byte buf[length];
     Wire.readBytes(buf, length);
     char str[128];
+    memset(str,0,128);
     sprintf(str, "%.*s", length, buf);
     //quit if it is null or full
     if (ws_send_que_handle == 0)
