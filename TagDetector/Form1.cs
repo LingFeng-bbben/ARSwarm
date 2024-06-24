@@ -3,7 +3,7 @@ using OpenCvSharp.Extensions;
 using OpenCvSharp.Aruco;
 using System.Diagnostics;
 using System.Threading;
-
+using WebSocketSharp.Server;
 
 namespace TagDetector
 {
@@ -70,16 +70,22 @@ namespace TagDetector
 
                 OutputArray[] rvec = new OutputArray[corners.Length];
                 OutputArray[] tvec = new OutputArray[corners.Length];
-                lastTime = DateTime.Now;
+
                 for (int i = 0; i < corners.Length; i++)
                 {
+
                     var cornersM = new Mat(corners[i].Length, 1, MatType.CV_32FC2, corners[i]);
                     rvec[i] = new Mat(1, 3, MatType.CV_32FC1);
                     tvec[i] = new Mat(1, 3, MatType.CV_32FC1);
                     Cv2.SolvePnP(objpoints, cornersM, camMatrix, new Mat(), rvec[i], tvec[i]);
-                    Trace.WriteLine(tvec[i]);
+                    rvec[i].GetMat().GetArray<float>(out var rarry);
+                    tvec[i].GetMat().GetArray<float>(out var tarry);
+                    for (int j = 0; j < 3; j++) {
+                        Program.Tagpos[ids[i], j] = rarry[j];
+                        Program.Tagpos[ids[i], j+3] = tarry[j];
+                    }
                 }
-                nowTime = DateTime.Now;
+                
 
                 if (isDisplay)
                 {
@@ -91,6 +97,8 @@ namespace TagDetector
                     Cv2.ImShow("aaa", detectedMarkers);
                     Cv2.WaitKey(1);
                 }
+
+                nowTime = DateTime.Now;
                 //TODO: pixel pos to camera pos https://docs.opencv.org/4.x/d5/dae/tutorial_aruco_detection.html
 
                 Invoke(new Action(() =>
@@ -99,6 +107,7 @@ namespace TagDetector
                     detlabel.Text = "Detection: " + ids.Length;
                 }));
 
+                Program.broadcast();
                 //TODO: send it through websocket, using some sort of line-up mechanism
 
                 lastTime = DateTime.Now;
