@@ -10,7 +10,12 @@ namespace ConsoleApp1
 
         protected override void OnMessage(MessageEventArgs e)
         {
-            Console.WriteLine("ID: " + this.ID + ": " + e.Data);
+            if (Program.sessionToDevice.Any(o=>o.Key== this.ID))
+            {
+                var deviceinfo = Program.sessionToDevice[this.ID];
+                Console.WriteLine("ID: " + deviceinfo.givenTag + ": " + e.Data);
+            }
+            
             List<bool> bits = new List<bool>();
             if (e.Data.StartsWith("IDREQ"))
             {
