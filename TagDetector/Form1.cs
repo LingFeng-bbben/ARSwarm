@@ -62,6 +62,7 @@ namespace TagDetector
                 var detectorParameters = new DetectorParameters();
                 detectorParameters.CornerRefinementMethod = CornerRefineMethod.Subpix;
                 detectorParameters.AprilTagDeglitch = 2;
+                detectorParameters.AdaptiveThreshWinSizeMin = 10;
 
                 using var dictionary = CvAruco.GetPredefinedDictionary(PredefinedDictionaryName.DictAprilTag_16h5);
 
