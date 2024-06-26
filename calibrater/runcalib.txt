@@ -1,0 +1,2 @@
+Note: you need opencv bin installed to PATH
+.\calibrate_camera_charuco.exe out --ci=0 -w=11 -h=8 --ml=0.015 --sl=0.021

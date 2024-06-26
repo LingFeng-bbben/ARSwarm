@@ -85,7 +85,12 @@ int main(int argc, char *argv[]) {
         inputVideo.open(video);
         waitTime = 0;
     } else {
+        
         inputVideo.open(camId);
+        inputVideo.set(CAP_PROP_FRAME_WIDTH, 1280);
+        inputVideo.set(CAP_PROP_FRAME_HEIGHT, 720);
+        inputVideo.set(CAP_PROP_FPS, 60);
+        inputVideo.set(CAP_PROP_FOURCC, VideoWriter::fourcc('M', 'J', 'P', 'G'));
         waitTime = 10;
     }
 

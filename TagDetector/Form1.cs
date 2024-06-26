@@ -50,10 +50,12 @@ namespace TagDetector
             objpoints.At<float>(2, 0) = markerLength / 2f; objpoints.At<float>(2, 1) = -markerLength / 2f;
             objpoints.At<float>(3, 0) = -markerLength / 2f; objpoints.At<float>(3, 1) = -markerLength / 2f;
 
-            float[] cp = { 742.8213031760763f, 0, 644.1494364074133f, 0, 743.32282205624892f, 431.6402401387432f, 0, 0, 1 };
+            float[] cp = { 2.2150152815497950e+03f, 0, 6.3898835940683546e+02f, 0, 2.2068086354666070e+03f, 4.3278260126065641e+02f, 0, 0, 1 };
             var camMatrix = new Mat(3,3,MatType.CV_32FC1,cp);
 
-            float[] de = { 0.082341193766002546f, -0.022321391433700741f, 0.00096243883092820637f, -0.0018705574042030097f, -0.243237764739379f };
+            float[] de = { -9.4636222112902979e-01f, -7.5252578395872023e+00f,
+       -8.9697399385702588e-03f, 8.6843125252537793e-03f,
+       1.2602645322804362e+02f };
             var destro = new Mat(5, 0, MatType.CV_32FC1, de);
             while (true)
             {
@@ -78,7 +80,7 @@ namespace TagDetector
                     var cornersM = new Mat(corners[i].Length, 1, MatType.CV_32FC2, corners[i]);
                     rvec[i] = new Mat(1, 3, MatType.CV_32FC1);
                     tvec[i] = new Mat(1, 3, MatType.CV_32FC1);
-                    Cv2.SolvePnP(objpoints, cornersM, camMatrix, new Mat(), rvec[i], tvec[i]);
+                    Cv2.SolvePnP(objpoints, cornersM, camMatrix, destro, rvec[i], tvec[i]);
                     rvec[i].GetMat().GetArray<float>(out var rarry);
                     tvec[i].GetMat().GetArray<float>(out var tarry);
                     for (int j = 0; j < 3; j++) {

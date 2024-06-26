@@ -35,8 +35,13 @@ public class SceneManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        theTestRobot.transform.position = CalculatedPosition;
-        theTestRobot.transform.rotation = Quaternion.AngleAxis(CalculatedRotation.magnitude*57.3248f, CalculatedRotation);
+        var posdelt = CalculatedPosition - theTestRobot.transform.position;
+        //if (posdelt.magnitude > 0.05f) 
+            theTestRobot.transform.position += 0.1f*posdelt;
+        var rawrotation = Quaternion.AngleAxis(CalculatedRotation.magnitude * 57.3248f, CalculatedRotation).eulerAngles.y;
+        var rotdelt = Mathf.DeltaAngle(theTestRobot.transform.rotation.eulerAngles.y, rawrotation);
+        var robotroty = theTestRobot.transform.rotation.eulerAngles.y;
+        theTestRobot.transform.rotation = Quaternion.Euler(0, robotroty+ (0.1f*rotdelt), 0);
     }
     private void OnDestroy()
     {
