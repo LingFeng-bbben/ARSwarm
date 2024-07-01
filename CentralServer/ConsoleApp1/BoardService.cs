@@ -10,20 +10,15 @@ namespace ConsoleApp1
 
         protected override void OnMessage(MessageEventArgs e)
         {
-            if (Program.sessionToDevice.Any(o=>o.Key== this.ID))
-            {
-                var deviceinfo = Program.sessionToDevice[this.ID];
-                Console.WriteLine("ID: " + deviceinfo.givenTag + ": " + e.Data);
-            }
-            
             List<bool> bits = new List<bool>();
             if (e.Data.StartsWith("IDREQ"))
             {
-                
+
                 var bitsCount = 4 * 4;
                 var macid = e.Data.Split(' ')[1];
                 var tagid = idCount;
-                if(Program.sessionToDevice.Any(o=>o.Value.macAddress == macid)){
+                if (Program.sessionToDevice.Any(o => o.Value.macAddress == macid))
+                {
                     var oldSession = Program.sessionToDevice.First(o => o.Value.macAddress == macid).Key;
                     if (Sessions.TryGetSession(oldSession, out var session))
                     {
@@ -54,6 +49,26 @@ namespace ConsoleApp1
                 Send(response);
             }
 
+            if (!Program.sessionToDevice.Any(o=>o.Key== this.ID))
+            {
+                return;
+            }
+            var deviceinfo = Program.sessionToDevice[this.ID];
+            Console.WriteLine("ID: " + deviceinfo.givenTag + ": " + e.Data);
+            if (e.Data.StartsWith("BPSEN"))
+            {
+                var data = e.Data.Substring(6);
+                var digits = data.Split(',');
+                int[] bumps = { int.Parse(digits[0]), int.Parse(digits[1]) };
+                Program.sessionToDevice[this.ID].rBump = bumps;
+            }
+            if (e.Data.StartsWith("ECSEN"))
+            {
+                var data = e.Data.Substring(6);
+                var digits = data.Split(',');
+                int[] encs = { int.Parse(digits[0]), int.Parse(digits[1]) };
+                Program.sessionToDevice[this.ID].rEncoder = encs;
+            }
         }
         protected override void OnOpen()
         {

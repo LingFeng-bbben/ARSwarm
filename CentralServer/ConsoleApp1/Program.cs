@@ -12,10 +12,13 @@ namespace ConsoleApp1
         {
             var json = File.ReadAllText("dict.json");
             aprilDict = Newtonsoft.Json.JsonConvert.DeserializeObject<Dictionary<string, byte[][]>>(json)["april_16h5"];
+            
             var wssv = new WebSocketServer("ws://0.0.0.0");
-
             wssv.AddWebSocketService<BoardService>("/ws");
+            wssv.AddWebSocketService<VisualService>("/vs");
+            
             wssv.Start();
+
             Console.ReadKey(true);
 
             wssv.Stop();
