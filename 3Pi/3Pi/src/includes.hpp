@@ -17,6 +17,8 @@
 #define IR3 A2
 #define IR4 A3
 #define IR5 A4
+#define BP1 4
+#define BP2 5
 #define IRTIMEOUT 1000 //micro seconds
 #define BUZZ 6
 

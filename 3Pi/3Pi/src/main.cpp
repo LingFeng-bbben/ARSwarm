@@ -41,24 +41,32 @@ void loop()
   // Serial.println(distance);
   // Serial.println(angle);
 
-  
-
-  if (iRValue[1] > threshold || iRValue[2] > threshold || iRValue[3] > threshold || iRValue[0] > threshold || iRValue[4] > threshold)
+  if (iRValue[1] > threshold ||
+      iRValue[2] > threshold ||
+      iRValue[3] > threshold ||
+      iRValue[0] > threshold ||
+      iRValue[4] > threshold ||
+      bPValue[0] > 1000 ||
+      bPValue[1] > 1000)
   {
     pSetSpeed(-10, -10);
     delay(500);
     pSetSpeed(-10, 10);
-    delay(800);
+    delay(random(300, 1000));
     pSetSpeed(10, 10);
   }
-  
+
   else
   {
     if (distance < 30)
     {
       // chase the ball
-      if (angle > 10)
+      if (angle > 30)
+        pSetSpeed(5, -5);
+      else if (angle > 10)
         pSetSpeed(10, 5);
+      else if (angle < -30)
+        pSetSpeed(-5, 5);
       else if (angle < -10)
         pSetSpeed(5, 10);
       else

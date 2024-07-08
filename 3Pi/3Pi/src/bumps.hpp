@@ -7,6 +7,8 @@ void iInit()
     pinMode(IR3, INPUT);
     pinMode(IR4, INPUT);
     pinMode(IR5, INPUT);
+    pinMode(BP1, INPUT);
+    pinMode(BP2, INPUT);
 }
 
 void iChargeIRSensor()
@@ -29,7 +31,19 @@ void iChargeIRSensor()
     pinMode(IR5, INPUT);
 }
 
+void iChargeBPSensor()
+{
+    pinMode(BP1, OUTPUT);
+    digitalWrite(BP1, HIGH);
+    pinMode(BP2, OUTPUT);
+    digitalWrite(BP2, HIGH);
+    delayMicroseconds(10);
+    pinMode(BP1, INPUT);
+    pinMode(BP2, INPUT);
+}
+
 int iRValue[5] = {0, 0, 0, 0, 0};
+int bPValue[2] = {0,0};
 void iUpdateIRs()
 {
     pinMode(EMIT, OUTPUT);
@@ -51,13 +65,28 @@ void iUpdateIRs()
         if (digitalRead(IR5))
             ir5t = micros();
     }
-    pinMode(EMIT, INPUT);
+    //pinMode(EMIT, INPUT);
     digitalWrite(EMIT, LOW);
     iRValue[0] = ir1t - startTime;
     iRValue[1] = ir2t - startTime;
     iRValue[2] = ir3t - startTime;
     iRValue[3] = ir4t - startTime;
     iRValue[4] = ir5t - startTime;
+    iChargeBPSensor();
+    startTime = micros();
+    while (digitalRead(BP1) || digitalRead(BP2))
+    {
+        if (micros() - startTime > IRTIMEOUT)
+            break;
+        if (digitalRead(BP1))
+            ir1t = micros();
+        if (digitalRead(BP2))
+            ir2t = micros();
+    }
+    pinMode(EMIT, INPUT);
+    bPValue[0] = ir1t - startTime;
+    bPValue[1] = ir2t - startTime;
+    
     // Serial.print(ir1t - startTime);
     // Serial.print(" ");
     // Serial.print(ir2t - startTime);
