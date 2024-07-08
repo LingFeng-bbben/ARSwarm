@@ -23,11 +23,18 @@ void onI2cRecv(int length)
     // Serial.printf("%.*s\n", length, buf);
 }
 
+extern char wsRcvBuf[32];
+
+void onI2cReq(){
+    Wire.write(wsRcvBuf);
+}
+
 void I2CConnect()
 {
     M5.Lcd.print("3Pi I2C Connect");
     Wire.begin(5);
     Wire.onReceive(onI2cRecv);
+    Wire.onRequest(onI2cReq);
     for (int i = 0; i < 5; i++)
     {
         M5.Lcd.print(".");

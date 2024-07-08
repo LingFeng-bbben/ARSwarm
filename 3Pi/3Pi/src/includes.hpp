@@ -27,5 +27,7 @@
 #include "bumps.hpp"
 #include "encoders.hpp"
 #include "ircomm.hpp"
+#include "motor.hpp"
+#include "pid.h"
 
 #endif

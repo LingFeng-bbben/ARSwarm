@@ -54,7 +54,7 @@ namespace ConsoleApp1
                 return;
             }
             var deviceinfo = Program.sessionToDevice[this.ID];
-            Console.WriteLine("ID: " + deviceinfo.givenTag + ": " + e.Data);
+            //Console.WriteLine("ID: " + deviceinfo.givenTag + ": " + e.Data);
             if (e.Data.StartsWith("BPSEN"))
             {
                 var data = e.Data.Substring(6);
@@ -68,6 +68,10 @@ namespace ConsoleApp1
                 var digits = data.Split(',');
                 int[] encs = { int.Parse(digits[0]), int.Parse(digits[1]) };
                 Program.sessionToDevice[this.ID].rEncoder = encs;
+            }
+            if (e.Data.StartsWith("MTREQ"))
+            {
+                Send("MTSEN "+Program.Command);
             }
         }
         protected override void OnOpen()

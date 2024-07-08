@@ -18,6 +18,8 @@ bool SendTextToWS(esp_websocket_client_handle_t client, String data)
     }
 }
 
+char wsRcvBuf[32];
+
 void ReceiveTextWS(String message)
 {
     String command = message.substring(0, 5);
@@ -36,5 +38,12 @@ void ReceiveTextWS(String message)
                 }
             }
         }
+    }
+    if(command == "MTSEN"){
+        memset(wsRcvBuf,0,32);
+        String digits = message.substring(6);
+        
+        sprintf(wsRcvBuf,"%s",digits.c_str());
+        //Serial.println(wsRcvBuf);
     }
 }
