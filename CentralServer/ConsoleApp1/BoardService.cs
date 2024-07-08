@@ -71,7 +71,10 @@ namespace ConsoleApp1
             }
             if (e.Data.StartsWith("MTREQ"))
             {
-                Send("MTSEN "+Program.Command);
+                if(Program.VirtualSensors.Any(o=>o.givenTag== deviceinfo.givenTag)){
+                    Send("MTSEN " + Program.VirtualSensors.Find(o => o.givenTag == deviceinfo.givenTag).message);
+                }
+                
             }
         }
         protected override void OnOpen()

@@ -18,4 +18,15 @@ namespace CentralServer
             this.macAddress = macAddress;
         }
     }
+
+    public class DeviceSensor
+    {
+        public int givenTag { get; set; } = -1;
+        public string message = string.Empty;
+        public DeviceSensor(int givenTag, string message)
+        {
+            this.givenTag = givenTag;
+            this.message = message;
+        }
+    }
 }

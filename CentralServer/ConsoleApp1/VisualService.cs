@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using WebSocketSharp;
 using WebSocketSharp.Server;
 
 namespace CentralServer
@@ -20,7 +21,12 @@ namespace CentralServer
                 this.Send(str);
                 await Task.Delay(100);
             }
-            
+        }
+
+        protected override void OnMessage(MessageEventArgs e)
+        {
+            Program.VirtualSensors = JsonConvert.DeserializeObject<List<DeviceSensor>>(e.Data);
+            base.OnMessage(e);
         }
     }
 }

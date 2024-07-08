@@ -12,12 +12,14 @@ public class SceneManager : MonoBehaviour
     WebSocket ws;
     WebSocket ws2;
     public GameObject prefab;
+    public GameObject theBall;
 
     List<GameObject> Robots = new List<GameObject>(30);
     
     Vector3[] CalculatedPositions = new Vector3[30];
     Vector3[] CalculatedRotations = new Vector3[30];
     List<DeviceInfo> DeviceInfos = new List<DeviceInfo>();
+    List<DeviceSensor> Sensors = new List<DeviceSensor>();
     // Start is called before the first frame update
     void Start()
     {
@@ -53,12 +55,14 @@ public class SceneManager : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
         for (int i = 0; i < 30; i++)
         {
+            //skip
             if (CalculatedPositions[i] == null) continue;
             if (CalculatedPositions[i].magnitude == 0) continue;
+
             var rbtobj = Robots[i];
             //smooth position
             if (CalculatedPositions[i].magnitude != 0 && !rbtobj.activeSelf)
@@ -80,7 +84,23 @@ public class SceneManager : MonoBehaviour
                 var text = string.Format("ID({2}) {0},{1}", dvinfo.rBump[0], dvinfo.rBump[1],i);
                 rbtobj.transform.Find("Canvas").Find("TextMessage").GetComponent<Text>().text = text;
             }
+
+            //virtual sensor
+            var pointer = rbtobj.transform.position - theBall.transform.position;
+            var distance = (int)(pointer.magnitude*100);
+            var angle = (int)Vector3.SignedAngle(rbtobj.transform.forward,pointer,rbtobj.transform.up);
+            var message = distance + "," + angle;
+            if (Sensors.Any(o => o.givenTag == i)) { 
+                Sensors.Find(o => o.givenTag == i).message = message;
+            }
+            else
+            {
+                Sensors.Add(new DeviceSensor(i, message));
+            }
+
         }
+        var sensstr = JsonConvert.SerializeObject(Sensors);
+        ws2.Send(sensstr);
     }
     private void OnDestroy()
     {

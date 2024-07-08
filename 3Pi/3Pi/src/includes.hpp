@@ -12,8 +12,11 @@
 #define E2AXB 8
 #define E2B 33
 #define EMIT 11
-#define IR1 4
-#define IR2 5
+#define IR1 12
+#define IR2 A0
+#define IR3 A2
+#define IR4 A3
+#define IR5 A4
 #define IRTIMEOUT 1000 //micro seconds
 #define BUZZ 6
 
