@@ -102,7 +102,6 @@ namespace TagDetector
                 }
 
                 nowTime = DateTime.Now;
-                //TODO: pixel pos to camera pos https://docs.opencv.org/4.x/d5/dae/tutorial_aruco_detection.html
 
                 Invoke(new Action(() =>
                 {
@@ -111,7 +110,6 @@ namespace TagDetector
                 }));
 
                 Program.broadcast();
-                //TODO: send it through websocket, using some sort of line-up mechanism
 
                 lastTime = DateTime.Now;
 

@@ -71,12 +71,12 @@ public class SceneManager : MonoBehaviour
                 rbtobj.transform.position = CalculatedPositions[i];
             }
             var posdelt = CalculatedPositions[i] - rbtobj.transform.position;
-            rbtobj.transform.position += 1f * posdelt;
+            rbtobj.transform.position += 0.1f * posdelt;
             //smooth rotation
             var rawrotation = Quaternion.AngleAxis(CalculatedRotations[i].magnitude * 57.3248f, CalculatedRotations[i]).eulerAngles.y;
             var rotdelt = Mathf.DeltaAngle(rbtobj.transform.rotation.eulerAngles.y, rawrotation);
             var robotroty = rbtobj.transform.rotation.eulerAngles.y;
-            rbtobj.transform.rotation = Quaternion.Euler(0, robotroty + (1f * rotdelt), 0);
+            rbtobj.transform.rotation = Quaternion.Euler(0, robotroty + (0.1f * rotdelt), 0);
             //display message
             var dvinfo = DeviceInfos.Find(o => o.givenTag == i);
             if (dvinfo != null)
