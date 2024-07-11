@@ -49,6 +49,8 @@ void loop()
       bPValue[0] > 1000 ||
       bPValue[1] > 1000)
   {
+    sprintf(msg, "Bump!Edge!");
+    i2cSend(msg);
     pSetSpeed(-10, -10);
     delay(500);
     pSetSpeed(-10, 10);
@@ -60,20 +62,34 @@ void loop()
   {
     if (distance < 30)
     {
+      sprintf(msg, "SeekBall");
+      i2cSend(msg);
       // chase the ball
       if (angle > 30)
+      {
         pSetSpeed(5, -5);
+      }
       else if (angle > 10)
+      {
         pSetSpeed(10, 5);
+      }
       else if (angle < -30)
+      {
         pSetSpeed(-5, 5);
+      }
       else if (angle < -10)
+      {
         pSetSpeed(5, 10);
+      }
       else
+      {
         pSetSpeed(10, 10);
+      }
     }
     else
     {
+      sprintf(msg, "Walk..");
+      i2cSend(msg);
       // random walk
       if (loopi > 200)
       {
@@ -93,10 +109,10 @@ void loop()
   // }
   // read vitural sensor
 
-  memset(msg, 0, 32);
-  sprintf(msg, "BPSEN %d,%d", iRValue[0], iRValue[1]);
-  i2cSend(msg);
-  sprintf(msg, "ECSEN %d,%d", eCount1, eCount2);
-  i2cSend(msg);
+  // memset(msg, 0, 32);
+  // sprintf(msg, "BPSEN %d,%d", iRValue[0], iRValue[1]);
+  // i2cSend(msg);
+  // sprintf(msg, "ECSEN %d,%d", eCount1, eCount2);
+  // i2cSend(msg);
   // delay(200);
 }

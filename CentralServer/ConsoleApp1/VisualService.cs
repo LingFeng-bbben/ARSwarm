@@ -12,15 +12,14 @@ namespace CentralServer
 {
     public class VisualService : WebSocketBehavior
     {
-        protected override async void OnOpen()
+        public void SendData(string data)
         {
+            Send(data);
+        }
+        protected override void OnOpen()
+        {
+            Program.visualServiceCurrent = this;
             base.OnOpen();
-            while (this.State == WebSocketSharp.WebSocketState.Open) {
-                var sessions = Program.sessionToDevice.Select(o=>o.Value).ToList().OrderBy(o=>o.givenTag);
-                var str = JsonConvert.SerializeObject(sessions);
-                this.Send(str);
-                await Task.Delay(100);
-            }
         }
 
         protected override void OnMessage(MessageEventArgs e)

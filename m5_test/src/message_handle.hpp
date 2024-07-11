@@ -3,6 +3,8 @@
 extern esp_websocket_client_handle_t wsclient;
 extern String macid;
 
+extern unsigned long sendTime;
+
 bool SendTextToWS(esp_websocket_client_handle_t client, String data)
 {
     if (esp_websocket_client_is_connected(client))
@@ -23,6 +25,10 @@ char wsRcvBuf[32];
 void ReceiveTextWS(String message)
 {
     String command = message.substring(0, 5);
+    if(command == "PINGR"){
+        
+        M5.Lcd.println(millis()-sendTime);
+    }
     if (command == "APTAG")
     {
         M5.Lcd.clear(BLACK);

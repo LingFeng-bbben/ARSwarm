@@ -9,9 +9,15 @@ extern String macid;
 
 QueueHandle_t ws_send_que_handle;
 
+unsigned long sendTime = 0;
+
 void Task1code(void *parameter)
 {
   WSConnect();
+  sendTime = millis();
+  M5.Lcd.print("WS Ping Time: ");
+  SendTextToWS(wsclient, "PINGS");
+  vTaskDelay(pdMS_TO_TICKS(2000));
   SendTextToWS(wsclient, "IDREQ " + macid);
   vTaskDelete(Task1);
 }
@@ -28,7 +34,7 @@ void Task2code(void *parameter)
   {
     if(xQueueReceive(ws_send_que_handle,&(rxbuf),(TickType_t)0)){
       SendTextToWS(wsclient, rxbuf);
-      vTaskDelay(pdMS_TO_TICKS(50));
+      vTaskDelay(pdMS_TO_TICKS(5));
     }
   }
   vTaskDelete(Task2);

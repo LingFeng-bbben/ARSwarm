@@ -7,6 +7,7 @@ using Newtonsoft.Json;
 using UnityEngine.UIElements;
 using Unity.VisualScripting;
 using System.Linq;
+using UnityEditor.VersionControl;
 public class SceneManager : MonoBehaviour
 {
     WebSocket ws;
@@ -19,7 +20,8 @@ public class SceneManager : MonoBehaviour
     Vector3[] CalculatedPositions = new Vector3[30];
     Vector3[] CalculatedRotations = new Vector3[30];
     List<DeviceInfo> DeviceInfos = new List<DeviceInfo>();
-    List<DeviceSensor> Sensors = new List<DeviceSensor>();
+    List<DeviceSensor> VirtualSensors = new List<DeviceSensor>();
+    List<DeviceSensor> PhysicalSensors = new List<DeviceSensor>();
     // Start is called before the first frame update
     void Start()
     {
@@ -40,7 +42,15 @@ public class SceneManager : MonoBehaviour
 
     private void Ws2_OnMessage(object sender, MessageEventArgs e)
     {
-        DeviceInfos = JsonConvert.DeserializeObject<List<DeviceInfo>>(e.Data);
+        var physicalSensorMessage = JsonConvert.DeserializeObject<DeviceSensor>(e.Data);
+        if (PhysicalSensors.Any(o => o.givenTag == physicalSensorMessage.givenTag))
+        {
+            PhysicalSensors.Find(o => o.givenTag == physicalSensorMessage.givenTag).message = physicalSensorMessage.message;
+        }
+        else
+        {
+            PhysicalSensors.Add(physicalSensorMessage);
+        }
     }
 
     private void Ws_OnMessage(object sender, MessageEventArgs e)
@@ -71,17 +81,17 @@ public class SceneManager : MonoBehaviour
                 rbtobj.transform.position = CalculatedPositions[i];
             }
             var posdelt = CalculatedPositions[i] - rbtobj.transform.position;
-            rbtobj.transform.position += 0.1f * posdelt;
+            rbtobj.transform.position += 0.3f * posdelt;
             //smooth rotation
             var rawrotation = Quaternion.AngleAxis(CalculatedRotations[i].magnitude * 57.3248f, CalculatedRotations[i]).eulerAngles.y;
             var rotdelt = Mathf.DeltaAngle(rbtobj.transform.rotation.eulerAngles.y, rawrotation);
             var robotroty = rbtobj.transform.rotation.eulerAngles.y;
-            rbtobj.transform.rotation = Quaternion.Euler(0, robotroty + (0.1f * rotdelt), 0);
+            rbtobj.transform.rotation = Quaternion.Euler(0, robotroty + (0.6f * rotdelt), 0);
             //display message
-            var dvinfo = DeviceInfos.Find(o => o.givenTag == i);
-            if (dvinfo != null)
+            var pysens = PhysicalSensors.Find(o => o.givenTag == i);
+            if (pysens != null)
             {
-                var text = string.Format("ID({2}) {0},{1}", dvinfo.rBump[0], dvinfo.rBump[1],i);
+                var text = string.Format("ID({0}) {1}", pysens.givenTag,pysens.message);
                 rbtobj.transform.Find("Canvas").Find("TextMessage").GetComponent<Text>().text = text;
             }
 
@@ -90,16 +100,16 @@ public class SceneManager : MonoBehaviour
             var distance = (int)(pointer.magnitude*100);
             var angle = (int)Vector3.SignedAngle(rbtobj.transform.forward,pointer,rbtobj.transform.up);
             var message = distance + "," + angle;
-            if (Sensors.Any(o => o.givenTag == i)) { 
-                Sensors.Find(o => o.givenTag == i).message = message;
+            if (VirtualSensors.Any(o => o.givenTag == i)) { 
+                VirtualSensors.Find(o => o.givenTag == i).message = message;
             }
             else
             {
-                Sensors.Add(new DeviceSensor(i, message));
+                VirtualSensors.Add(new DeviceSensor(i, message));
             }
 
         }
-        var sensstr = JsonConvert.SerializeObject(Sensors);
+        var sensstr = JsonConvert.SerializeObject(VirtualSensors);
         ws2.Send(sensstr);
     }
     private void OnDestroy()

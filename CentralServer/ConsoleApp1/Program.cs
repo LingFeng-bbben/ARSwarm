@@ -9,6 +9,7 @@ namespace ConsoleApp1
         public static byte[][] aprilDict = new byte[0][];
         public static Dictionary<string,DeviceInfo> sessionToDevice = new Dictionary<string,DeviceInfo>();
         public static List<DeviceSensor> VirtualSensors = new List<DeviceSensor>();
+        public static VisualService? visualServiceCurrent;
         public static void Main(string[] args)
         {
             var json = File.ReadAllText("dict.json");

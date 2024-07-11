@@ -5,7 +5,7 @@ void setup()
 {
   // put your setup code here, to run once:
   M5.begin(true, false, true, false);
-
+  //M5.Rtc.begin();
   M5.Lcd.drawJpg(TSUMU, sizeof(TSUMU), 0, 0);
   M5.Lcd.setTextColor(GREEN);
   M5.Lcd.setTextSize(1);
