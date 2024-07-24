@@ -29,8 +29,10 @@ void onI2cRecv(int length)
     // quit if it is null or full
     if (ws_send_que_handle == 0)
         return;
-    if (xQueueIsQueueFullFromISR(ws_send_que_handle))
-        return;
+    if (xQueueIsQueueFullFromISR(ws_send_que_handle)){
+        xQueueReset(ws_send_que_handle);
+    }
+       
     xQueueSend(ws_send_que_handle, (void *)str, 0);
     // SendTextToWS(wsclient,String(str,strleng));
     // Serial.printf("%.*s\n", length, buf);
