@@ -1,5 +1,7 @@
 #include "includes.hpp"
 
+int id = -1;
+
 void setup()
 {
   Wire.setClock(400000);
@@ -11,6 +13,16 @@ void setup()
   mInit();
   tInit();
   i2cInit();
+  delay(2000);
+  id = -1;
+  while (id <= 0)
+  {
+    id = i2cGetId();
+    Serial.println("Waiting for M5 to get ID from server");
+    delay(500);
+  }
+  Serial.println(id);
+  Serial.println("OK");
 }
 
 const int threshold = 2500;

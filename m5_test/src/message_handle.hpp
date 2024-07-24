@@ -21,6 +21,7 @@ bool SendTextToWS(esp_websocket_client_handle_t client, String data)
 }
 
 char wsRcvBuf[32];
+int tagId = -1;
 
 void ReceiveTextWS(String message)
 {
@@ -44,6 +45,11 @@ void ReceiveTextWS(String message)
                 }
             }
         }
+    }
+    if (command == "TAGNM"){
+        int id = message.substring(6, 22).toInt();
+        M5.Lcd.println(id);
+        tagId = id;
     }
     if(command == "MTSEN"){
         memset(wsRcvBuf,0,32);

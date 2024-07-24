@@ -102,6 +102,7 @@ void setIRMessage(char *str_to_send, int len)
     }
 }
 
+//get light sensor data and print to serial.
 void getSensors()
 {
     // Set mode to read fetch sensor data

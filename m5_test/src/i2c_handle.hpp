@@ -3,17 +3,30 @@
 extern QueueHandle_t ws_send_que_handle;
 bool isInitMsgRecv = false;
 
+bool isGetTagIdMod = false;
+
 void onI2cRecv(int length)
 {
-    //Serial.println(xPortGetCoreID());
+    // Serial.println(xPortGetCoreID());
     isInitMsgRecv = true;
     // Serial.println(length);
     byte buf[length];
     Wire.readBytes(buf, length);
     char str[128];
-    memset(str,0,128);
+    memset(str, 0, 128);
     sprintf(str, "%.*s", length, buf);
-    //quit if it is null or full
+
+    if (strncmp(str, "GTTAG", 5) == 0)
+    {
+        isGetTagIdMod = true;
+        return;
+    }
+    else
+    {
+        isGetTagIdMod = false;
+    }
+
+    // quit if it is null or full
     if (ws_send_que_handle == 0)
         return;
     if (xQueueIsQueueFullFromISR(ws_send_que_handle))
@@ -24,9 +37,22 @@ void onI2cRecv(int length)
 }
 
 extern char wsRcvBuf[32];
+extern int tagId;
 
-void onI2cReq(){
-    Wire.write(wsRcvBuf);
+void onI2cReq()
+{
+    if (isGetTagIdMod)
+    {
+        char buf[5];
+        memset(buf,0,5);
+        itoa(tagId,buf,10);
+        M5.Lcd.println(buf);
+        Wire.write(buf);
+    }
+    else
+    {
+        Wire.write(wsRcvBuf);
+    }
 }
 
 void I2CConnect()

@@ -54,6 +54,7 @@ namespace ConsoleApp1
                     response += bit ? "1" : "0";
                 }
                 Send(response);
+                Send("TAGNM "+ tagid);
                 return;
             }
 

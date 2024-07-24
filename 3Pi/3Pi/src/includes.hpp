@@ -27,6 +27,7 @@
 
 #include <Arduino.h>
 #include <Wire.h>
+#include <avr/wdt.h>
 
 #include "i2c_handle.hpp"
 #include "bumps.hpp"
