@@ -113,12 +113,12 @@ void loop()
     }
   }
 
-  // sprintf(msg,"Hello mate");
-  // //read ir
-  // setIRMessage(msg,32);
-  // for(int i=0;i<4;i++){
-  //   getIRMessage(i);
-  // }
+  sprintf(msg,"%d",id);
+  //read ir
+  setIRMessage(msg,32);
+  for(int i=0;i<4;i++){
+    getIRMessage(i);
+  }
   // read vitural sensor
 
   // memset(msg, 0, 32);

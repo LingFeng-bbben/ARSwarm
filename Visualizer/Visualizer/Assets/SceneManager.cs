@@ -8,11 +8,13 @@ using UnityEngine.UIElements;
 using Unity.VisualScripting;
 using System.Linq;
 using UnityEditor.VersionControl;
+using System.Drawing;
 public class SceneManager : MonoBehaviour
 {
     WebSocket ws;
     WebSocket ws2;
     public GameObject prefab;
+    public GameObject linePrefab;
     public GameObject theBall;
 
     List<GameObject> Robots = new List<GameObject>(30);
@@ -51,6 +53,45 @@ public class SceneManager : MonoBehaviour
         {
             PhysicalSensors.Add(physicalSensorMessage);
         }
+        var msg = physicalSensorMessage.message;
+        if (msg.StartsWith("IRRCV"))
+        {
+            var to = physicalSensorMessage.givenTag;
+            var from = int.Parse(msg.Split(' ')[2]);
+            print("IR from " + from + " to " + to);
+            DwkUnityMainThreadDispatcher.Instance().Enqueue(() =>
+            {
+                var line = Instantiate(linePrefab);
+                line.GetComponent<SetLine>().SetTarget(Robots[from], Robots[to]);
+            });
+            
+        }
+        if (msg.StartsWith("SeekBall"))
+        {
+            DwkUnityMainThreadDispatcher.Instance().Enqueue(() =>
+            {
+                Robots[physicalSensorMessage.givenTag].GetComponent<MeshRenderer>().material.SetColor("_Color", UnityEngine.Color.yellow);
+            });
+        }
+        if (msg.StartsWith("Bump!Edge!"))
+        {
+            DwkUnityMainThreadDispatcher.Instance().Enqueue(() =>
+            {
+                Robots[physicalSensorMessage.givenTag].GetComponent<MeshRenderer>().material.SetColor("_Color", UnityEngine.Color.red);
+            });
+        }
+        if (msg.StartsWith("Walk.."))
+        {
+            DwkUnityMainThreadDispatcher.Instance().Enqueue(() =>
+            {
+                Robots[physicalSensorMessage.givenTag].GetComponent<MeshRenderer>().material.SetColor("_Color", UnityEngine.Color.green);
+            });
+        }
+    }
+
+    void wsCallMainThread()
+    {
+        
     }
 
     private void Ws_OnMessage(object sender, MessageEventArgs e)
@@ -116,6 +157,10 @@ public class SceneManager : MonoBehaviour
     {
         if (ws != null) {
             ws.Close();
+        }
+        if (ws2 != null)
+        {
+            ws2.Close();
         }
     }
 }

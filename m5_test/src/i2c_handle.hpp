@@ -48,7 +48,7 @@ void onI2cReq()
         char buf[5];
         memset(buf,0,5);
         itoa(tagId,buf,10);
-        M5.Lcd.println(buf);
+        //M5.Lcd.println(buf);
         Wire.write(buf);
     }
     else
