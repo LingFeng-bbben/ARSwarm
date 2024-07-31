@@ -27,14 +27,14 @@ void Task1code(void *parameter)
 void Task2code(void *parameter)
 {
   char rxbuf[128];
-  ws_send_que_handle = xQueueCreate(10,sizeof(rxbuf));
+  ws_send_que_handle = xQueueCreate(15,sizeof(rxbuf));
   //TODO: 处理任务发送队列
   //Test code for the latency
   while (1)
   {
     if(xQueueReceive(ws_send_que_handle,&(rxbuf),(TickType_t)0)){
       SendTextToWS(wsclient, rxbuf);
-      vTaskDelay(pdMS_TO_TICKS(5));
+      vTaskDelay(pdMS_TO_TICKS(4));
     }
   }
   vTaskDelete(Task2);

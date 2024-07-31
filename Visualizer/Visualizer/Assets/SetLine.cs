@@ -36,7 +36,7 @@ public class SetLine : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        lineRenderer.SetPositions(new Vector3[] { from.transform.position, to.transform.position, to.transform.position });
+        lineRenderer.SetPositions(new Vector3[] { from.transform.position + new Vector3(0f,0.5f), to.transform.position + new Vector3(0f, 0.5f) });
         var gradient = new Gradient();
         gradient.colorKeys = new GradientColorKey[]
         {

@@ -9,9 +9,9 @@ bool SendTextToWS(esp_websocket_client_handle_t client, String data)
 {
     if (esp_websocket_client_is_connected(client))
     {
-        Serial.println("Sending: " + data);
+        //Serial.println("Sending: " + data);
         const char *buf = data.c_str();
-        esp_websocket_client_send_text(client, buf, strlen(buf), pdMS_TO_TICKS(1000));
+        esp_websocket_client_send_text(client, buf, strlen(buf), pdMS_TO_TICKS(500));
         return true;
     }
     else
