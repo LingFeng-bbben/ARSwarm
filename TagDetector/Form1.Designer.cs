@@ -89,8 +89,9 @@
             button2.Name = "button2";
             button2.Size = new Size(75, 24);
             button2.TabIndex = 6;
-            button2.Text = "Calibrate";
+            button2.Text = "RecFPS";
             button2.UseVisualStyleBackColor = true;
+            button2.Click += button2_Click;
             // 
             // Form1
             // 

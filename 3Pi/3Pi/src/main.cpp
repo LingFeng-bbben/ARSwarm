@@ -63,11 +63,11 @@ void loop()
   {
     sprintf(msg, "Bump!Edge!");
     i2cSend(msg);
-    pSetSpeed(-10, -10);
+    pSetSpeed(-8, -8);
     delay(500);
-    pSetSpeed(-10, 10);
+    pSetSpeed(-8, 8);
     delay(random(300, 1000));
-    pSetSpeed(10, 10);
+    pSetSpeed(8, 8);
   }
 
   else
@@ -108,7 +108,7 @@ void loop()
         turn = random(-5, 5);
         loopi = 0;
       }
-      pSetSpeed(8 + turn, 8 - turn);
+      pSetSpeed(7 + turn, 7 - turn);
       loopi++;
     }
   }

@@ -32,7 +32,7 @@ void Task2code(void *parameter)
   //Test code for the latency
   while (1)
   {
-    if(xQueueReceive(ws_send_que_handle,&(rxbuf),(TickType_t)0)){
+    if(xQueueReceive(ws_send_que_handle,&(rxbuf),pdMS_TO_TICKS(4))){
       SendTextToWS(wsclient, rxbuf);
       vTaskDelay(pdMS_TO_TICKS(4));
     }

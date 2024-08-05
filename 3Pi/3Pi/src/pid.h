@@ -53,8 +53,8 @@ int tMoSpeed2 = 0;
 volatile short pTargetSpd2;
 short mPWMPower2;
 
-PID mPid1(1.0f,0.01f,0.01f);
-PID mPid2(1.0f,0.01f,0.01f);
+PID mPid1(1.0f,0.001f,0.001f);
+PID mPid2(1.0f,0.001f,0.001f);
 
 //motor control loop
 

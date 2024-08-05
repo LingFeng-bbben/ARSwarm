@@ -4,6 +4,7 @@ using OpenCvSharp.Aruco;
 using System.Diagnostics;
 using System.Threading;
 using WebSocketSharp.Server;
+using Newtonsoft.Json;
 
 namespace TagDetector
 {
@@ -11,6 +12,8 @@ namespace TagDetector
     {
         VideoCapture capture;
         Thread processThread;
+        bool isRecordFT = false;
+        List<DetectionResult> testRecord = new List<DetectionResult>();
         public Form1()
         {
             InitializeComponent();
@@ -51,7 +54,7 @@ namespace TagDetector
             objpoints.At<float>(3, 0) = -markerLength / 2f; objpoints.At<float>(3, 1) = -markerLength / 2f;
 
             float[] cp = { 2.2150152815497950e+03f, 0, 6.3898835940683546e+02f, 0, 2.2068086354666070e+03f, 4.3278260126065641e+02f, 0, 0, 1 };
-            var camMatrix = new Mat(3,3,MatType.CV_32FC1,cp);
+            var camMatrix = new Mat(3, 3, MatType.CV_32FC1, cp);
 
             float[] de = { -9.4636222112902979e-01f, -7.5252578395872023e+00f,
        -8.9697399385702588e-03f, 8.6843125252537793e-03f,
@@ -73,35 +76,47 @@ namespace TagDetector
 
                 OutputArray[] rvec = new OutputArray[corners.Length];
                 OutputArray[] tvec = new OutputArray[corners.Length];
-
+                //Program.Tagpos = new float[30, 6];
                 for (int i = 0; i < corners.Length; i++)
                 {
-
                     var cornersM = new Mat(corners[i].Length, 1, MatType.CV_32FC2, corners[i]);
                     rvec[i] = new Mat(1, 3, MatType.CV_32FC1);
                     tvec[i] = new Mat(1, 3, MatType.CV_32FC1);
                     Cv2.SolvePnP(objpoints, cornersM, camMatrix, destro, rvec[i], tvec[i]);
                     rvec[i].GetMat().GetArray<float>(out var rarry);
                     tvec[i].GetMat().GetArray<float>(out var tarry);
-                    for (int j = 0; j < 3; j++) {
+                    for (int j = 0; j < 3; j++)
+                    {
                         Program.Tagpos[ids[i], j] = rarry[j];
-                        Program.Tagpos[ids[i], j+3] = tarry[j];
+                        Program.Tagpos[ids[i], j + 3] = tarry[j];
                     }
                 }
-                
+
+                nowTime = DateTime.Now;
 
                 if (isDisplay)
                 {
                     using var detectedMarkers = frame.Clone();
                     CvAruco.DrawDetectedMarkers(detectedMarkers, corners, ids, Scalar.Crimson);
-                    for (int i = 0; i < corners.Length; i++) { 
+                    for (int i = 0; i < corners.Length; i++)
+                    {
                         Cv2.DrawFrameAxes(detectedMarkers, camMatrix, new Mat(), rvec[i].GetMat(), tvec[i].GetMat(), markerLength * 1.5f, 2);
                     }
                     Cv2.ImShow("aaa", detectedMarkers);
                     Cv2.WaitKey(1);
                 }
 
-                nowTime = DateTime.Now;
+                if (isRecordFT)
+                {
+                    var frameData = new DetectionResult()
+                    {
+                        FrameTime = (nowTime - lastTime).TotalSeconds,
+                        Count = ids.Length,
+                        Tagpos = (float[,])Program.Tagpos.Clone(),
+                    };
+                    testRecord.Add(frameData);
+                }
+                
 
                 Invoke(new Action(() =>
                 {
@@ -116,5 +131,22 @@ namespace TagDetector
             }
         }
 
+        private async void button2_Click(object sender, EventArgs e)
+        {
+            testRecord = new List<DetectionResult>();
+            isRecordFT = true;
+            await Task.Delay(10000);
+            isRecordFT = false;
+            var json = JsonConvert.SerializeObject(testRecord);
+            File.WriteAllText(Guid.NewGuid().ToString()+".json", json);
+        }
     }
+
+    public class DetectionResult
+    {
+        public float[,] Tagpos = new float[30, 6];
+        public double FrameTime = 0;
+        public int Count = 0;
+    }
+
 }
