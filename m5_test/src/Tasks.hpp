@@ -14,11 +14,14 @@ unsigned long sendTime = 0;
 void Task1code(void *parameter)
 {
   WSConnect();
-  sendTime = millis();
-  M5.Lcd.print("WS Ping Time: ");
-  SendTextToWS(wsclient, "PINGS");
-  vTaskDelay(pdMS_TO_TICKS(2000));
-  SendTextToWS(wsclient, "IDREQ " + macid);
+  for(int i=0;i<10;i++){
+    sendTime = millis();
+    M5.Lcd.print("WS Ping Time: ");
+    SendTextToWS(wsclient, "PINGS");
+    vTaskDelay(pdMS_TO_TICKS(1000));
+  }
+  //never trigger the ID so we can record the data displayed on screen
+  //SendTextToWS(wsclient, "IDREQ " + macid);
   vTaskDelete(Task1);
 }
 
