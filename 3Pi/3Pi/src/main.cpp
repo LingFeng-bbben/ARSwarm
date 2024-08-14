@@ -25,6 +25,8 @@ void setup()
   Serial.println("OK");
 }
 
+const int baseSpeed = 5;
+const int randomRange = 3;
 const int threshold = 2500;
 int loopi = 0;
 int turn = 0;
@@ -105,10 +107,10 @@ void loop()
       // random walk
       if (loopi > 200)
       {
-        turn = random(-5, 5);
+        turn = random(-randomRange, randomRange);
         loopi = 0;
       }
-      pSetSpeed(7 + turn, 7 - turn);
+      pSetSpeed(baseSpeed + turn, baseSpeed - turn);
       loopi++;
     }
   }

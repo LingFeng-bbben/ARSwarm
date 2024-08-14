@@ -9,6 +9,9 @@ using Unity.VisualScripting;
 using System.Linq;
 using UnityEditor.VersionControl;
 using System.Drawing;
+using System.IO;
+using System;
+using System.Text;
 public class SceneManager : MonoBehaviour
 {
     WebSocket ws;
@@ -24,6 +27,9 @@ public class SceneManager : MonoBehaviour
     List<DeviceInfo> DeviceInfos = new List<DeviceInfo>();
     List<DeviceSensor> VirtualSensors = new List<DeviceSensor>();
     List<DeviceSensor> PhysicalSensors = new List<DeviceSensor>();
+
+    FileStream fileStream;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -40,8 +46,12 @@ public class SceneManager : MonoBehaviour
             robot.SetActive(false);
             Robots.Add(robot);
         }
+        var path = Application.temporaryCachePath +"/"+ Guid.NewGuid().ToString() + ".csv";
+        fileStream = File.Create(path);
+        print(path);
     }
 
+    //From Robot Message
     private void Ws2_OnMessage(object sender, MessageEventArgs e)
     {
         var physicalSensorMessage = JsonConvert.DeserializeObject<DeviceSensor>(e.Data);
@@ -94,6 +104,7 @@ public class SceneManager : MonoBehaviour
         
     }
 
+    //From Camera Message
     private void Ws_OnMessage(object sender, MessageEventArgs e)
     {
        
@@ -130,8 +141,10 @@ public class SceneManager : MonoBehaviour
             rbtobj.transform.rotation = Quaternion.Euler(0, robotroty + (0.6f * rotdelt), 0);
             //display message
             var pysens = PhysicalSensors.Find(o => o.givenTag == i);
+            var sensormessage = "";
             if (pysens != null)
             {
+                sensormessage = pysens.message;
                 var text = string.Format("ID({0}) {1}", pysens.givenTag,pysens.message);
                 rbtobj.transform.Find("Canvas").Find("TextMessage").GetComponent<Text>().text = text;
             }
@@ -149,12 +162,26 @@ public class SceneManager : MonoBehaviour
                 VirtualSensors.Add(new DeviceSensor(i, message));
             }
 
+            //logging
+            var log = string.Format("{0},{1},{2},{3},{4}\n",
+                i,
+                Time.fixedUnscaledTime,
+                rbtobj.transform.position.x,
+                rbtobj.transform.position.z,
+                rbtobj.transform.rotation.eulerAngles.y);
+            var buf = Encoding.UTF8.GetBytes(log);
+            fileStream.Write(buf, 0, buf.Length);
+
         }
         var sensstr = JsonConvert.SerializeObject(VirtualSensors);
         ws2.Send(sensstr);
     }
     private void OnDestroy()
     {
+        if (fileStream!=null)
+        {
+            fileStream.Close();
+        }
         if (ws != null) {
             ws.Close();
         }
