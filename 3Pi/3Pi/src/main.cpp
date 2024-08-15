@@ -38,82 +38,82 @@ void loop()
 
   char msg[32];
 
-  // read virtual sensor
-  i2cSend("MTREQ");
-  Wire.requestFrom(M5_I2C_ADDR, 32, true);
-  memset(msg, 0, 32);
-  for (int i = 0; i < 32; i++)
-  {
-    char buf = Wire.read();
-    if (buf == -1)
-      break;
-    msg[i] = buf;
-  }
-  const char sep[2] = ",";
-  int distance = atoi(strtok(msg, sep));
-  int angle = atoi(strtok(NULL, sep));
-  // Serial.println(distance);
-  // Serial.println(angle);
+  // // read virtual sensor
+  // i2cSend("MTREQ");
+  // Wire.requestFrom(M5_I2C_ADDR, 32, true);
+  // memset(msg, 0, 32);
+  // for (int i = 0; i < 32; i++)
+  // {
+  //   char buf = Wire.read();
+  //   if (buf == -1)
+  //     break;
+  //   msg[i] = buf;
+  // }
+  // const char sep[2] = ",";
+  // int distance = atoi(strtok(msg, sep));
+  // int angle = atoi(strtok(NULL, sep));
+  // // Serial.println(distance);
+  // // Serial.println(angle);
 
-  if (iRValue[1] > threshold ||
-      iRValue[2] > threshold ||
-      iRValue[3] > threshold ||
-      iRValue[0] > threshold ||
-      iRValue[4] > threshold ||
-      bPValue[0] > 1000 ||
-      bPValue[1] > 1000)
-  {
-    sprintf(msg, "Bump!Edge!");
-    i2cSend(msg);
-    pSetSpeed(-8, -8);
-    delay(500);
-    pSetSpeed(-8, 8);
-    delay(random(300, 1000));
-    pSetSpeed(8, 8);
-  }
+  // if (iRValue[1] > threshold ||
+  //     iRValue[2] > threshold ||
+  //     iRValue[3] > threshold ||
+  //     iRValue[0] > threshold ||
+  //     iRValue[4] > threshold ||
+  //     bPValue[0] > 1000 ||
+  //     bPValue[1] > 1000)
+  // {
+  //   sprintf(msg, "Bump!Edge!");
+  //   i2cSend(msg);
+  //   pSetSpeed(-8, -8);
+  //   delay(500);
+  //   pSetSpeed(-8, 8);
+  //   delay(random(300, 1000));
+  //   pSetSpeed(8, 8);
+  // }
 
-  else
-  {
-    if (distance < 30)
-    {
-      sprintf(msg, "SeekBall");
-      i2cSend(msg);
-      // chase the ball
-      if (angle > 30)
-      {
-        pSetSpeed(5, -5);
-      }
-      else if (angle > 10)
-      {
-        pSetSpeed(10, 5);
-      }
-      else if (angle < -30)
-      {
-        pSetSpeed(-5, 5);
-      }
-      else if (angle < -10)
-      {
-        pSetSpeed(5, 10);
-      }
-      else
-      {
-        pSetSpeed(10, 10);
-      }
-    }
-    else
-    {
-      sprintf(msg, "Walk..");
-      i2cSend(msg);
-      // random walk
-      if (loopi > 200)
-      {
-        turn = random(-randomRange, randomRange);
-        loopi = 0;
-      }
-      pSetSpeed(baseSpeed + turn, baseSpeed - turn);
-      loopi++;
-    }
-  }
+  // else
+  // {
+  //   if (distance < 30)
+  //   {
+  //     sprintf(msg, "SeekBall");
+  //     i2cSend(msg);
+  //     // chase the ball
+  //     if (angle > 30)
+  //     {
+  //       pSetSpeed(5, -5);
+  //     }
+  //     else if (angle > 10)
+  //     {
+  //       pSetSpeed(10, 5);
+  //     }
+  //     else if (angle < -30)
+  //     {
+  //       pSetSpeed(-5, 5);
+  //     }
+  //     else if (angle < -10)
+  //     {
+  //       pSetSpeed(5, 10);
+  //     }
+  //     else
+  //     {
+  //       pSetSpeed(10, 10);
+  //     }
+  //   }
+  //   else
+  //   {
+  //     sprintf(msg, "Walk..");
+  //     i2cSend(msg);
+  //     // random walk
+  //     if (loopi > 200)
+  //     {
+  //       turn = random(-randomRange, randomRange);
+  //       loopi = 0;
+  //     }
+  //     pSetSpeed(baseSpeed + turn, baseSpeed - turn);
+  //     loopi++;
+  //   }
+  // }
 
   sprintf(msg,"%d",id);
   //read ir

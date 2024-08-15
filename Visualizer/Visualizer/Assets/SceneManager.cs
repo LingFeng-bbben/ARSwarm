@@ -73,8 +73,17 @@ public class SceneManager : MonoBehaviour
             {
                 var line = Instantiate(linePrefab);
                 line.GetComponent<SetLine>().SetTarget(Robots[from], Robots[to]);
+                //logging
+                var log = string.Format("{0},{1},{2}\n",
+                    Time.fixedUnscaledTime,
+                    from,
+                    to);
+                var buf = Encoding.UTF8.GetBytes(log);
+                fileStream.Write(buf, 0, buf.Length);
             });
+
             
+
         }
         if (msg.StartsWith("SeekBall"))
         {
@@ -162,15 +171,7 @@ public class SceneManager : MonoBehaviour
                 VirtualSensors.Add(new DeviceSensor(i, message));
             }
 
-            //logging
-            var log = string.Format("{0},{1},{2},{3},{4}\n",
-                i,
-                Time.fixedUnscaledTime,
-                rbtobj.transform.position.x,
-                rbtobj.transform.position.z,
-                rbtobj.transform.rotation.eulerAngles.y);
-            var buf = Encoding.UTF8.GetBytes(log);
-            fileStream.Write(buf, 0, buf.Length);
+            
 
         }
         var sensstr = JsonConvert.SerializeObject(VirtualSensors);
